@@ -28,7 +28,7 @@ class FormularioNoticiaActivity : AppCompatActivity() {
 
     private val viewModel by lazy {
         val repository = NoticiaRepository(AppDatabase.getInstance(this).noticiaDAO)
-        val factory = FormularioNoticiaViewModelFactory(noticiaId, repository)
+        val factory = FormularioNoticiaViewModelFactory(repository)
         ViewModelProvider(this, factory)
             .get(FormularioNoticiaViewModel::class.java)
     }

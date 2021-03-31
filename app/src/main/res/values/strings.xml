@@ -5,4 +5,5 @@
     <string name="titulo">Título</string>
     <string name="escreva_seu_texto">Escreva seu texto…</string>
     <string name="salvar">Salvar</string>
+    <string name="nova_noticia">nova notícia</string>
 </resources>

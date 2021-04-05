@@ -24,7 +24,7 @@ class VisualizaNoticiaFragment: Fragment() {
         arguments?.getLong(NOTICIA_ID_CHAVE)
             ?: throw IllegalArgumentException("Id inválido")
     }
-    var quandoSelecionaMenuEdicao: () -> Unit = {}
+    var quandoSelecionaMenuEdicao: (noticia: Noticia) -> Unit = {}
     var quandoFinaliza: () -> Unit = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +49,10 @@ class VisualizaNoticiaFragment: Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.visualiza_noticia_menu_edita -> quandoSelecionaMenuEdicao()
+            R.id.visualiza_noticia_menu_edita -> {
+                viewModel.noticiaEncontrada.value?.let(quandoSelecionaMenuEdicao)
+
+            }
             R.id.visualiza_noticia_menu_remove -> remove()
         }
         return super.onOptionsItemSelected(item)

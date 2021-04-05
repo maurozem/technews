@@ -6,21 +6,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import br.com.alura.technews.R
 import br.com.alura.technews.model.Noticia
+import br.com.alura.technews.ui.activity.extensions.transacaoFragment
 import br.com.alura.technews.ui.fragment.ListaNoticiaFragment
 import br.com.alura.technews.ui.fragment.VisualizaNoticiaFragment
 
-private const val TITULO_APPBAR = "Notícias"
+
 
 class NoticiasActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_noticias)
-        title = TITULO_APPBAR
+        if (savedInstanceState == null) {
+            abreListaNoticias()
+        }
+    }
 
-        val transacao = supportFragmentManager.beginTransaction()
-        transacao.add(R.id.activity_noticias_container, ListaNoticiaFragment())
-        transacao.commit()
+    private fun abreListaNoticias() {
+        transacaoFragment {
+            add(R.id.activity_noticias_container, ListaNoticiaFragment())
+        }
     }
 
     private fun abreFormularioModoCriacao() {
@@ -29,34 +34,32 @@ class NoticiasActivity : AppCompatActivity() {
     }
 
     private fun abreVisualizadorNoticia(noticia: Noticia) {
-        val transacao = supportFragmentManager.beginTransaction()
         val fragment = VisualizaNoticiaFragment()
         val dados = Bundle()
         dados.putLong(NOTICIA_ID_CHAVE, noticia.id)
         fragment.arguments = dados
-
-        transacao.replace(
-            R.id.activity_noticias_container,
-            fragment
-        )
-        transacao.commit()
+        transacaoFragment {
+            addToBackStack(null)
+            replace(R.id.activity_noticias_container, fragment)
+        }
     }
 
     override fun onAttachFragment(fragment: Fragment) {
         super.onAttachFragment(fragment)
-        if (fragment is ListaNoticiaFragment) {
-            fragment.quandoFabSalvaNoticiaClicado = {
-                abreFormularioModoCriacao()
-            }
-            fragment.quandoNoticiaSeleciona = {
-                abreVisualizadorNoticia(it)
-            }
-        } else if (fragment is VisualizaNoticiaFragment) {
-            fragment.quandoFinaliza = { finish() }
-            fragment.quandoSelecionaMenuEdicao = { noticiaSelecionada ->
-                abreFormularioEdicao(noticiaSelecionada)
-            }
+        when (fragment) {
+            is ListaNoticiaFragment -> configuraListaNoticia(fragment)
+            is VisualizaNoticiaFragment -> configuraVisualizaNoticia(fragment)
         }
+    }
+
+    private fun configuraListaNoticia(fragment: ListaNoticiaFragment) {
+        fragment.quandoFabSalvaNoticiaClicado = this::abreFormularioModoCriacao
+        fragment.quandoNoticiaSeleciona = this::abreVisualizadorNoticia
+    }
+
+    private fun configuraVisualizaNoticia(fragment: VisualizaNoticiaFragment) {
+        fragment.quandoFinaliza = this::finish
+        fragment.quandoSelecionaMenuEdicao = this::abreFormularioEdicao
     }
 
     private fun abreFormularioEdicao(noticia: Noticia) {

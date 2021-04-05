@@ -16,6 +16,7 @@ import java.lang.IllegalArgumentException
 
 private const val NOTICIA_NAO_ENCONTRADA = "Notícia não encontrada"
 private const val MENSAGEM_FALHA_REMOCAO = "Não foi possível remover notícia"
+private const val TITULO_APPBAR = "Visualiza Notícia"
 
 class VisualizaNoticiaFragment: Fragment() {
 
@@ -30,6 +31,7 @@ class VisualizaNoticiaFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        activity?.title = TITULO_APPBAR
         verificaIdDaNoticia()
         buscaNoticiaSelecionada()
     }
@@ -40,6 +42,11 @@ class VisualizaNoticiaFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.visualiza_noticia, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        activity?.title = TITULO_APPBAR
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
